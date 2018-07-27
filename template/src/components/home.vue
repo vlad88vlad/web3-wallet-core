@@ -83,17 +83,7 @@
     import Popup from './customComponents/popup.vue'
     import AddToken from './customComponents/addToken.vue'
 
-//    import {RippleAPI} from 'ripple-lib'
-//
-//    //    console.log(RippleAPI);
-//    const api = new RippleAPI({
-//        server: 'wss://s.altnet.rippletest.net:51233' // Public rippled server hosted by Ripple, Inc.
-//    });
-//    api.connect().then(() => {
-//        api.getBalances('r4JTZCbecohpHpjyYNSZSW6K34Yr3Gwixr').then(res => {
-//            console.log(res);
-//        })
-//    })
+
     export default {
 
         components: {Popup, AddToken},
