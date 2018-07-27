@@ -1,0 +1,43 @@
+<html>
+<head>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+       let qrImg = fetch('https://127.0.0.1:8010/qrcode')
+            .then(function(response) {
+                response.json().then(function(data) {
+                    console.log(data);
+                    let x = document.createElement("IMG");
+                    x.setAttribute("src", data.qrcode);
+                    document.body.appendChild(x);
+
+                });
+            });
+
+
+        function getCode() {
+            let code =document.getElementById('code').value;
+            console.log(code);
+
+            (async () => {
+                const rawResponse = await fetch('https://127.0.0.1:8010/code', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({token:code})
+                });
+                const content = await rawResponse.json();
+
+                console.log(content);
+            })();
+        }
+    </script>
+</head>
+<body>
+<div id="results"></div>
+<input type="text" value="code1" id="code" />
+<button onclick="getCode()">click</button>
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 <template>
     <transition name="fade">
         <div class='vuestic-alert alert' :class="alertClass" v-if="!hidden">
-            <slot ></slot>
+            <slot></slot>
             <i class="fa fa-close alert-close" v-if="withCloseBtn" @click="hide()"></i>
         </div>
     </transition>
@@ -48,9 +48,11 @@
 <style scoped>
 
     .alert {
+        /*transition: 1s;*/
+        /*margin-right: -200px;*/
         position: fixed;
         top: 2%;
-        opacity:0.8;
+        opacity: 0.8;
         right: 2%;
         width: 250px;
         padding: 0.75rem 1.25rem;
@@ -197,10 +199,14 @@
 
     .fade-enter-active, .fade-leave-active {
         transition: opacity .5s
+        /*transform: translateX(-295px);*/
+
     }
 
     .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */
     {
+        /*transform: translateX(295px);*/
+
         opacity: 0
     }
 </style>

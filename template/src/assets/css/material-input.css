@@ -1,0 +1,102 @@
+/*========== material input ==========*/
+.input-control {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+
+.matirial-input {
+    width: 100%;
+    font-size: 13px;
+    display: inline-block;
+    border: none;
+    padding-bottom: 5px;
+    margin-right: 5px;
+    border-bottom: 1px solid #757575;
+}
+
+.matirial-input:focus {
+    outline: none;
+}
+
+.matirial-label {
+    margin: 0;
+    top: 0;
+    font-size: 16px;
+    transition: 0.7s cubic-bezier(0.25, 0.8, 0.5, 1);
+
+    position: absolute
+}
+
+.matirial-input:focus ~ .matirial-label, .active ~ .matirial-label {
+    -webkit-transform: translateY(-18px) translateX(-5px) scale(1);
+    transform: translateY(-18px) translateX(-4px) scale(1);
+    font-size: 14px;
+    /*left:4px;*/
+    margin-left: 4px;
+    color: #1e81f0;
+}
+
+.bar {
+    position: relative;
+    display: block;
+
+}
+
+.bar:before, .bar:after {
+    content: '';
+    height: 1px;
+    width: 0;
+    /* bottom: 1px; */
+    position: absolute;
+    background: #1e81f0;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+.bar:before {
+    left: 50%;
+}
+
+.bar:after {
+    right: 50%
+}
+
+/* active state */
+.matirial-input:focus ~ .bar:before, .matirial-input:focus ~ .bar:after {
+    width: 50%;
+}
+
+.input-error {
+    opacity: 0;
+    color: #ff5733;
+    transition: 0.7s cubic-bezier(0.25, 0.8, 0.5, 1);
+
+}
+
+.matirial-input.no-validate {
+    color: #ff0300;
+    border-bottom: 1px solid #ff0300 !important;
+
+}
+
+.no-validate ~ .bar:before, .no-validate ~ .bar:after {
+    background: #ff5733;
+
+}
+
+.no-validate ~ .matirial-label {
+    color: #ff5733
+}
+
+.no-validate ~ .input-error {
+    opacity: 1;
+
+}
+
+.no-validate + .matirial-label {
+    color: #ff5733 !important;
+
+}

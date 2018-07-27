@@ -1,56 +1,57 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource';
-
+import VueLocalStorage from 'vue-localstorage'
 import App from './App'
 import router from './router'
 
-import VueMaterial from 'vue-material'
-import 'vue-material/dist/theme/default.css'
 
+import Vuetify from 'vuetify'
+import VueCookies from 'vue-cookies'
+import Autocomplete from 'v-autocomplete'
+import vueTopprogress from 'vue-top-progress'
+import Provider from './provider/web3provider'
+import VueSocketio from 'vue-socket.io';
+
+import colors from 'vuetify/es5/util/colors';
+import 'vuetify/dist/vuetify.css'
+import './assets/css/material-input.css'
 import './assets/css/fonts-matirial.css'
 import './assets/css/roboto.css'
-// import 'vue-material/dist/vue-material.css'
-import 'vue-material/dist/vue-material.css'
-
 import './assets/css/css.css'
-// import Chart from './components/customComponents/vuestic-chart/VuesticChart.vue'
-
-import VueCookies from 'vue-cookies'
-
-import Autocomplete from 'v-autocomplete'
 import 'v-autocomplete/dist/v-autocomplete.css'
-import vueTopprogress from 'vue-top-progress'
-
-Vue.use(vueTopprogress)
 
 Vue.use(Autocomplete)
-Vue.use(VueMaterial);
+Vue.use(VueLocalStorage);
 Vue.use(VueCookies)
-// Vue.component(Chart.name, Chart)
-
-
-// Vue.config.productionTip = false;
-
 Vue.use(VueResource);
+Vue.use(vueTopprogress)
+// Vue.use(VueSocketio, 'http://localhost:8000');
+Vue.use(Vuetify, {
+    theme: {
+        primary: colors.purple.base,
+        secondary: colors.grey.darken1,
+        accent: colors.shades.black,
+        error: colors.red.accent3,
+    }
+});
+const web = new Provider("https://ropsten.infura.io");
 
-Vue.directive('title', {
-    inserted: (el, binding) => document.title = binding.value,
-    update: (el, binding) => document.title = binding.value
-})
 
 new Vue({
 
 
-  el: '#app',
-  router,
-  data: {
-      title: 'This will be the title'
+    el: '#app',
+    router,
+    data: {
+        web,
+    },
+    template: '<App/>',
+    components: {
+        App
+    },
+    methods: {},
+    created(){
+        console.log('s');
 
-  },
-  template: '<App/>',
-  components: {
-    App
-  },
-  methods: {
-  }
-})
+    }
+});

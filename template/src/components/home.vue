@@ -1,151 +1,149 @@
 <template>
-    <div>
-
-        <md-empty-state
-                md-icon="call_to_action"
-                md-label="vue cli"
-                md-description="It's my first custom vue cli.">
-        </md-empty-state>
-
-
-        <div class="container">
-
-            <alert v-for="(alert,index) in alerts" :style="'top:'+ ((index+1) *6-4) +'%'" :type="alert.type"
-                   :withCloseBtn="true"
-            >
-                <md-icon class="md-success">check</md-icon>
-                <span> {{alert.text}} </span>
-            </alert>
-
-
-            <template v-if="showChart">
-
-                <donut-chart :data="donutChartData"></donut-chart>
-                <line-chart :data="donutChartData"></line-chart>
-                <bubble-chart :data="bubbleChartData"></bubble-chart>
-
-            </template>
-
-        </div>
+    <div style="margin-top: 25px ;">
+        <transition name="fade">
+            <popup @modal="modalClose" v-show="popupShow" :type="type" :active="popupShow" :token-address="tokenAddress"
+                   :symbol="symbol"></popup>
+        </transition>
 
         <transition name="fade">
-            <popup @modal="modalClose" v-show="popupShow" :active="popupShow"></popup>
+            <add-token @addToken="modalAddTokenClose" v-show="popupShowAddToken"
+            ></add-token>
         </transition>
 
 
-        <md-speed-dial class="dial bottomPosition">
-            <md-speed-dial-target>
-                <md-icon>add</md-icon>
-            </md-speed-dial-target>
+        <div class="flex-container-parent">
+            <div class="flex-container">
+                <div v-if="balance !==false ">
+                    <v-card style="text-align: center"
+                            width="200" height="150">
+                        <img src="../assets/eth.png" width="60" height="60">
+                        <div>ETH</div>
+                        <div>
+                            {{(+balance).toFixed(4)}}
+                        </div>
+                        <v-card-actions>
 
-            <md-speed-dial-content>
-                <md-button class="md-icon-button" @click="popupShow = !popupShow">
-                    <md-icon>view_carousel</md-icon>
-                </md-button>
+                            <router-link class="custom-link v-btn" :to="'history/ETH'">
+                                <v-icon>history</v-icon>
+                                history
+                            </router-link>
 
-                <md-button class="md-icon-button" @click="showChart = !showChart ;">
-                    <md-icon>pie_chart</md-icon>
+                            <button class=" v-btn success" @click="openPopup('ETH')">
+                                <v-icon>rotate_right</v-icon>
+                                send
+                            </button>
+                        </v-card-actions>
 
-                </md-button>
-                <md-button class="md-icon-button" @click="callAlert();">
-                    <md-icon>notification_important</md-icon>
-                </md-button>
-            </md-speed-dial-content>
-        </md-speed-dial>
 
+                    </v-card>
+                </div>
+                <div v-for="item in $parent.supportedTokens">
+                    <v-card style="text-align: center"
+                            width="200" height="150">
+                        <img src="../assets/coin.svg" width="60" height="60">
+                        <div>{{item.symbol}}</div>
+                        <div>
+                            {{(+item.balance).toFixed(4)}}
+                        </div>
+                        <v-card-actions>
+
+                            <router-link class="custom-link v-btn" :to="`history/token/${item.address}`">
+                                <v-icon>history</v-icon>
+                                history
+                            </router-link>
+
+                            <button :disabled="+item.balance == 0" class=" v-btn success" @click="openPopup('token',item.address,item.symbol)">
+                                <v-icon>rotate_right</v-icon>
+                                send
+                            </button>
+                        </v-card-actions>
+                    </v-card>
+                </div>
+                <div>
+                    <v-card style="text-align: center"
+                            width="200" height="150">
+                        <button class="btn-add " @click="popupShowAddToken =!popupShowAddToken">
+                            <v-icon style="font-size: 90px;color:var(--main-bg-color-header)">add_circle_outline
+                            </v-icon>
+                        </button>
+                        <v-card-actions style="justify-content: center">
+                            <h2>Add token</h2>
+                        </v-card-actions>
+
+
+                    </v-card>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     import router from '.././router'
     import Popup from './customComponents/popup.vue'
-    import alert from './customComponents/alert.vue'
-    import DonutChart from './customComponents/vuestic-chart/chart-types/DonutChart'
-    import LineChart from './customComponents/vuestic-chart/chart-types/LineChart'
-    import BubbleChart from './customComponents/vuestic-chart/chart-types/BubbleChart'
+    import AddToken from './customComponents/addToken.vue'
 
+//    import {RippleAPI} from 'ripple-lib'
+//
+//    //    console.log(RippleAPI);
+//    const api = new RippleAPI({
+//        server: 'wss://s.altnet.rippletest.net:51233' // Public rippled server hosted by Ripple, Inc.
+//    });
+//    api.connect().then(() => {
+//        api.getBalances('r4JTZCbecohpHpjyYNSZSW6K34Yr3Gwixr').then(res => {
+//            console.log(res);
+//        })
+//    })
     export default {
 
-        components: {Popup, alert, DonutChart, LineChart, BubbleChart},
+        components: {Popup, AddToken},
         name: 'home',
         data() {
             return {
                 popupShow: false,
-                post: false,
-                showAlert: false,
-                showChart: false,
-                alerts: [],
-                donutChartData: {
-                    labels: ['html', 'css', 'js'],
-                    datasets: [{
-                        label: 'Population (millions)',
-                        backgroundColor: ['#E3A233', '#2E23DA', '#FFE83B'],
-                        data: [100, 200, 300]
-                    }]
-                },
-                bubbleChartData: {
-                    datasets: [{
-                        label: 'js',
-                        data: [{
-                            x: 6,
-                            y: 6,
-                            r: 10
-                        }],
-                        backgroundColor: "#FFE83B",
-                        hoverBackgroundColor: "#ffe100"
-                    },
-                        {
-                            label: 'css',
-                            data: [{
-                                x: 4,
-                                y: 5,
-                                r: 10
-                            }],
-                            backgroundColor: "#2E23DA",
-                            hoverBackgroundColor: "#0000da"
-                        },
-                        {
-                            label: 'html',
-                            data: [{
-                                x: 2,
-                                y: 3,
-                                r: 10
-                            }],
-                            backgroundColor: "#E3A233",
-                            hoverBackgroundColor: "#e3a800"
-                        }]
-                }
+                popupShowAddToken: false,
+                baseUrl: this.$parent.baseUrl,
+                balance: false,
+                type: '',
+                tokenAddress: '',
+                symbol: '',
+                supportedTokens: this.$parent.supportedTokens,
+                address: this.$localStorage.get('address').toLowerCase()
+
+
             }
         },
         router,
+
+
         methods: {
+            getBalance() {
+                if (this.$localStorage.get('address') !== 'null') {
+                    this.$root.web.getBalance(this.$localStorage.get('address').toLowerCase()).then(balance => {
+                        console.log('balance');
+                        console.log(balance);
+                        this.balance = balance;
+                    })
+                }
+            },
+
+            openPopup(type, tokenAddress, symbol) {
+                this.type = type;
+                this.tokenAddress = tokenAddress;
+                if (symbol) {
+                    this.symbol = symbol;
+                } else {
+                    this.symbol = "ETH"
+                }
+                this.popupShow = !this.popupShow;
+            },
             modalClose(evt) {
                 this.popupShow = evt;
             },
-            callAlert() {
-                this.showAlert = true;
-//
-                let temp =Math.floor(Math.random() * 1000);
+            modalAddTokenClose(evt) {
+                this.popupShowAddToken = evt;
+            },
 
-                this.alerts.push({
-                    showAlert: true,
-                    text: `success ${temp}`,
-                });
-                let length = this.alerts.length;
-                if(temp <250) {
-                    this.alerts[length - 1].type ='success';
-                }else if(temp<500){
-                    this.alerts[length - 1].type ='warning';
-                }else if(temp<750){
-                    this.alerts[length - 1].type ='danger';
-                }else{
-                    this.alerts[length - 1].type ='info';
-                }
-                setTimeout(() => {
-                    this.alerts.splice(0, 1)
-
-                }, 5000)
-            }
 
         },
         mounted() {
@@ -153,6 +151,7 @@
         computed: {},
         watch: {},
         created() {
+            this.getBalance()
         }
 
 
@@ -160,6 +159,36 @@
 </script>
 
 <style scoped>
+    .btn-add {
+        transition: .5s;
+        border-radius: 100% !important;
+
+    }
+
+    .btn-add:hover {
+        box-shadow: 0px 6px 10px #555;
+
+    }
+
+    .flex-container-parent {
+        display: flex;
+        justify-content: space-around;
+
+    }
+
+    .flex-container {
+        display: inline-flex;
+
+        justify-content: center;
+        flex-wrap: wrap;
+        flex-direction: row;
+
+    }
+
+    .flex-container > div {
+        margin: 5px 15px;
+    }
+
     .dial {
         position: fixed;
         bottom: 0;
@@ -176,11 +205,17 @@
     }
 
     .fade-enter-active, .fade-leave-active {
-        transition: opacity .9s;
+        transition: opacity .2s;
     }
 
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
     {
         opacity: 0;
+    }
+
+    @media screen and (max-width: 500px) {
+        .flex-container {
+            justify-content: center;
+        }
     }
 </style>
